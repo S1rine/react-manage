@@ -1,5 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
+
+import store from './redux/store'
 
 import App from './App'
 
@@ -11,6 +14,8 @@ Object.keys(COMMON_GLOBAL).forEach((key) => {
 })
 
 ReactDOM.render(
-  <App />,
+  <Provider store={store}>
+    <App />
+  </Provider>,
   document.getElementById('root')
 )

@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Modal, message } from 'antd'
+import { connect } from 'react-redux';
+
+import { logout } from '../../redux/actions'
 
 import LinkButton from '../link-button'
 
 import menuList from '../../config/menuConfig'
 import memoryUtils from '../../utils/memoryUtils'
-import { removeUser } from '../../utils/storageUtils'
 import { formateDate } from '../../utils/dateUtils'
 
 import { getWeather } from '../../api/manage'
@@ -63,15 +65,7 @@ class Header extends Component {
       okText: '确认',
       cancelText: '取消',
       onOk: () => {
-        return new Promise((resolve) => {
-          const { history } = this.props
-          removeUser()
-          memoryUtils.user = null
-          setTimeout(() => {
-            resolve()
-            history.replace('/login')
-          }, 1000)
-        })
+        this.props.logout()
       },
       onCancel: () => {
         message.info('取消退出')
@@ -79,13 +73,14 @@ class Header extends Component {
     })
   }
   render () {
-    const { user, logout } = this
+    const { logout } = this
+    const { user } = this.props
     const { currentTime, dayPictureUrl, weather } = this.state
-    const title = this.getTitle()
+    const title = this.props.headerTitle
     return (
       <div className="header">
         <div className="header_top">
-          <span className="welcome">欢迎，{user}</span>
+          <span className="welcome">欢迎，{user.username}</span>
           <LinkButton onClick={logout}>
             退出
         </LinkButton>
@@ -103,4 +98,7 @@ class Header extends Component {
   }
 }
 
-export default withRouter(Header)
+export default connect(
+  state => ({ headerTitle: state.headerTitle, user: state.user }),
+  { logout }
+)(withRouter(Header))

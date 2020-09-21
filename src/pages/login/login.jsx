@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
+import { Redirect } from 'react-router-dom'
 import { Form, Icon, Input, Button, message } from 'antd'
+import { connect } from 'react-redux'
 
+import { loginAction } from '../../redux/actions'
 import logo from '../../assets/img/logo.png'
 import './login.less'
 
@@ -11,19 +14,12 @@ import { login } from './../../api/manage'
 const Item = Form.Item
 
 class Login extends Component {
-  UNSAFE_componentWillMount () {
-    this.checkLogin()
-  }
-  checkLogin = () => {
-    const user = memoryUtils.user
-    const { history } = this.props
-    if (user) return history.replace('/')
-  }
   handleSubmit = e => {
     e.preventDefault()
     this.props.form.validateFields((err, value) => {
       if (!err) {
-        this.login(value)
+        this.props.loginAction(value)
+        // this.login(value)
       } else {
         console.log('验证失败')
       }
@@ -58,8 +54,11 @@ class Login extends Component {
     }
   }
   render () {
+    const user = this.props.user
+    if (user._id) return <Redirect to="/" />
     const { handleSubmit, validatorPwd } = this
     const { getFieldDecorator } = this.props.form
+    const { errMsg } = this.props.user
     return (
       <div className="login">
         <div className="login_header">
@@ -67,6 +66,7 @@ class Login extends Component {
           <h2>React后台管理</h2>
         </div>
         <div className="login_content">
+          {errMsg ? <div className="err_msg">{errMsg}</div> : null}
           <h2>用户登录</h2>
           <Form onSubmit={handleSubmit} className="login-form">
             <Item>
@@ -113,4 +113,7 @@ class Login extends Component {
 
 const WrapperLogin = Form.create()(Login)
 
-export default WrapperLogin
+export default connect(
+  state => ({ user: state.user }),
+  { loginAction }
+)(WrapperLogin)

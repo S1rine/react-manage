@@ -17,7 +17,9 @@
 ### 4.配置api地址
 第一次尝试在 .env 文件中写入后台接口的地址，然后用环境变量进行读取。
 > `npm start`: `.env.development.local`, `.env.development`, `.env.local`, `.env`
+
 > `npm run build`: `.env.production.local`, `.env.production`, `.env.local`, `.env`
+
 > `npm test`: `.env.test.local`, `.env.test`, `.env (note .env.local is missing)`
 
 以上是各个命令读取 .env 文件的优先级

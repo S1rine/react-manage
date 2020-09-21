@@ -10,7 +10,7 @@ const saveUser = (user) => {
 }
 const getUser = () => {
   // return JSON.parse(storage.getItem(USER_KEY))
-  return store.get(USER_KEY)
+  return store.get(USER_KEY) || {}
 }
 const removeUser = () => {
   // storage.removeItem(USER_KEY)

@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import { Layout } from 'antd'
-
-import memoryUtils from './../../utils/memoryUtils'
+import { connect } from 'react-redux'
 
 import LeftNav from '../../components/left-nav'
 import Header from '../../components/header';
@@ -19,20 +18,14 @@ import Pie from '../charts/pie'
 
 const { Footer, Sider, Content } = Layout
 
-export default class Admin extends Component {
-  state = {
-    user: {}
-  }
-  UNSAFE_componentWillMount () {
-    this.getUser()
-  }
+class Admin extends Component {
   getUser = () => {
-    const user = memoryUtils.user
+    const user = this.props.user
     const { history } = this.props
-    if (!user) return history.replace('/login')
-    this.setState({ user })
+    if (!user._id) return history.replace('/login')
   }
   render () {
+    this.getUser()
     return (
       <Layout className="admin">
         <Sider width="250">
@@ -61,3 +54,8 @@ export default class Admin extends Component {
     )
   }
 }
+
+export default connect(
+  state => ({ user: state.user }),
+  {}
+)(Admin)
